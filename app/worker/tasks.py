@@ -69,6 +69,7 @@ async def _ingest_async(
 
     # ── Stage 1: Extract ───────────────────────────────────────────────────
     doc_chunks_map: dict[str, list] = {}
+    failed_doc_ids: set[str] = set()
     for doc_info in documents:
         doc_id = doc_info["doc_id"]
         filename = doc_info["filename"]
@@ -79,6 +80,7 @@ async def _ingest_async(
         except Exception as exc:
             logger.exception("Extraction failed for %s", filename)
             errors.append(f"{filename}: extraction error – {exc}")
+            failed_doc_ids.add(doc_id)
 
     # ── Stage 2: Chunk ─────────────────────────────────────────────────────
     async with Session() as session:
@@ -141,9 +143,7 @@ async def _ingest_async(
         for doc_info in documents:
             doc = await session.get(Document, doc_info["doc_id"])
             if doc:
-                doc.status = "failed" if doc_info["doc_id"] in [
-                    e.split(":")[0] for e in errors
-                ] else "indexed"
+                doc.status = "failed" if doc_info["doc_id"] in failed_doc_ids else "indexed"
         await session.commit()
 
     await engine.dispose()

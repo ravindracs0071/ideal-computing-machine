@@ -3,8 +3,9 @@
 Supported types:
   .md / .txt  → direct UTF-8 decode
   .pdf        → pypdf text; OCR fallback via PyMuPDF if low text
-  .docx       → python-docx
-  .doc        → python-docx (limited; LibreOffice not required for MVP)
+  .docx       → python-docx (Office Open XML format)
+  .doc        → python-docx (limited support; only works for some .doc files;
+                legacy OLE2 binary .doc files may fail or produce empty output)
   .xls/.xlsx  → pandas / openpyxl
   images      → pytesseract OCR
 """

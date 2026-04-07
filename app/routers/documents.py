@@ -1,5 +1,6 @@
 """Documents router – POST /datasets/{dataset_id}/documents."""
 
+import json
 import mimetypes
 import os
 import uuid
@@ -115,7 +116,7 @@ async def upload_documents(
     except Exception as exc:
         # If Redis is unavailable, record the job as failed gracefully
         job_record.status = "failed"
-        job_record.errors = f'["Redis unavailable: {exc}"]'
+        job_record.errors = json.dumps([f"Redis unavailable: {exc}"])
         await db.commit()
 
     return UploadResponse(
