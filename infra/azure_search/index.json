@@ -1,0 +1,103 @@
+{
+  "name": "doc-rag-index",
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "filterable": true
+    },
+    {
+      "name": "chunk_id",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "doc_id",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "dataset_id",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "searchable": true,
+      "retrievable": true,
+      "analyzerName": "en.microsoft"
+    },
+    {
+      "name": "contentVector",
+      "type": "Collection(Edm.Single)",
+      "dimensions": 3072,
+      "vectorSearchProfile": "hnsw-profile",
+      "searchable": true,
+      "retrievable": false
+    },
+    {
+      "name": "source_name",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "page",
+      "type": "Edm.Int32",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "sheet",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    },
+    {
+      "name": "mime_type",
+      "type": "Edm.String",
+      "filterable": true,
+      "retrievable": true
+    }
+  ],
+  "vectorSearch": {
+    "profiles": [
+      {
+        "name": "hnsw-profile",
+        "algorithm": "hnsw-config"
+      }
+    ],
+    "algorithms": [
+      {
+        "name": "hnsw-config",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "metric": "cosine",
+          "m": 4,
+          "efConstruction": 400,
+          "efSearch": 500
+        }
+      }
+    ]
+  },
+  "semantic": {
+    "configurations": [
+      {
+        "name": "semantic-config",
+        "prioritizedFields": {
+          "contentFields": [
+            {"fieldName": "content"}
+          ],
+          "keywordsFields": [
+            {"fieldName": "source_name"}
+          ]
+        }
+      }
+    ]
+  }
+}
